@@ -4,7 +4,7 @@ import { resolve, dirname } from 'node:path'
 import { STACK_ROOT, STACK_DIR } from '../../scripts/lib/paths.ts'
 import { stackSource, consumeRebuildFlag } from '../../scripts/lib/source.ts'
 import { loadStackEnv, substituteTemplate } from '../../scripts/lib/stack-env.ts'
-import { generatedGenIfMissing } from '../../scripts/lib/generated.ts'
+import { generatedGenIfMissing, generatedGet } from '../../scripts/lib/generated.ts'
 import { dc } from '../../scripts/lib/dc.ts'
 import { log } from '../../scripts/lib/log.ts'
 
@@ -16,7 +16,14 @@ export default async function build(): Promise<void> {
   //    values come from .stack/.env (incl. block-owned HONCHO_* keys
   //    that may interpolate ${STACK_LLM_MODEL*} — dotenv-expand resolves
   //    those for us).
-  const env = loadStackEnv()
+  //  REDIS_PASSWORD is owned by redis (.stack/redis/.generated.env), not
+  //  .stack/.env. Gen-if-missing is idempotent with redis/build.ts, so build
+  //  order between the two doesn't matter.
+  generatedGenIfMissing('redis', 'REDIS_PASSWORD', '', 16)
+  const env: Record<string, string> = {
+    ...loadStackEnv(),
+    REDIS_PASSWORD: generatedGet('redis', 'REDIS_PASSWORD'),
+  }
   const tpl = resolve(STACK_ROOT, 'services/honcho/config.toml.template')
   const out = resolve(STACK_DIR, 'honcho/config.runtime.toml')
   mkdirSync(dirname(out), { recursive: true })
