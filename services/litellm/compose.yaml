@@ -18,7 +18,7 @@ services:
       # Auth for the cliproxy/* model_list entries -> http://cliproxyapi:8317
       # (CLIProxyAPI-routed ChatGPT/Codex; streaming-correct, observable).
       CLIPROXY_API_KEY: ${CLIPROXY_API_KEY}
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
       # ChatGPT Subscription Proxy Config — see chatgpt/README.md.
       # CHATGPT_DEFAULT_INSTRUCTIONS must be >= a single space to stop LiteLLM
       # injecting the codex system prompt.

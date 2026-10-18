@@ -278,7 +278,7 @@ MAX_BUFFER_SIZE = 10000
 # Cache settings
 [cache]
 ENABLED = true
-URL = "redis://redis:6379/0?suppress=true"
+URL = "redis://:__REDIS_PASSWORD__@redis:6379/0?suppress=true"
 # NAMESPACE = "honcho"  # Inherits from app.NAMESPACE if not set
 DEFAULT_TTL_SECONDS = 300
 DEFAULT_LOCK_TTL_SECONDS = 5

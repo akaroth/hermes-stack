@@ -75,8 +75,8 @@ services:
       WORKER_PORT: "3005"
       ENV: local
       HARNESS_STARTUP_TIMEOUT_MS: "60000"
-      REDIS_URL: redis://redis:6379/3
-      REDIS_RATE_LIMIT_URL: redis://redis:6379/3
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/3
+      REDIS_RATE_LIMIT_URL: redis://:${REDIS_PASSWORD}@redis:6379/3
       PLAYWRIGHT_MICROSERVICE_URL: http://firecrawl-playwright:3000/scrape
       POSTGRES_HOST: firecrawl-postgres
       POSTGRES_PORT: "5432"

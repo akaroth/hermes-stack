@@ -10,7 +10,7 @@ services:
     entrypoint: ["sh", "docker/entrypoint.sh"]
     environment:
       DB_CONNECTION_URI: postgresql+psycopg://honcho:${HONCHO_DB_PASSWORD}@pg:5432/honcho
-      CACHE_URL: redis://redis:6379/0?suppress=true
+      CACHE_URL: redis://:${REDIS_PASSWORD}@redis:6379/0?suppress=true
       CACHE_ENABLED: "true"
       HONCHO_VIRTUAL_KEY: ${HONCHO_VIRTUAL_KEY}
       # The startup embedding-validator refuses to serve unless the physical
@@ -42,7 +42,7 @@ services:
     entrypoint: ["/app/.venv/bin/python", "-m", "src.deriver"]
     environment:
       DB_CONNECTION_URI: postgresql+psycopg://honcho:${HONCHO_DB_PASSWORD}@pg:5432/honcho
-      CACHE_URL: redis://redis:6379/0?suppress=true
+      CACHE_URL: redis://:${REDIS_PASSWORD}@redis:6379/0?suppress=true
       CACHE_ENABLED: "true"
       HONCHO_VIRTUAL_KEY: ${HONCHO_VIRTUAL_KEY}
       # The startup embedding-validator refuses to serve unless the physical
