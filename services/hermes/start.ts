@@ -9,6 +9,9 @@ import { loadStackEnv } from '../../scripts/lib/stack-env.ts'
 import { generatedGet } from '../../scripts/lib/generated.ts'
 import { orbExec } from '../../scripts/lib/orb.ts'
 import { log, die } from '../../scripts/lib/log.ts'
+import { applyTaskModels } from './task-models.ts'
+import { applyObsidianMcp, obsidianLevers } from './obsidian-mcp.ts'
+import { startObsidianForward } from './obsidian-forward-run.ts'
 
 const SVC = 'hermes'
 const D = resolve(STACK_ROOT, 'services/hermes')
@@ -61,7 +64,18 @@ export default async function start(): Promise<void> {
         out.push(ln)
       }
       if (!replaced) out.unshift(modelBlock.trimEnd())
-      writeFileSync(cfg, out.join('\n').replace(/\n*$/, '') + '\n')
+      writeFileSync(
+        cfg,
+        applyObsidianMcp(
+          applyTaskModels(
+            out.join('\n').replace(/\n*$/, '') + '\n',
+            loadStackEnv(),
+            `http://litellm.${project}.orb.local:4000/v1`,
+            hk,
+          ),
+          obsidianLevers(loadStackEnv()),
+        ),
+      )
       log('hermes/start: re-applied model: block with current HERMES_VIRTUAL_KEY (Mac-side)')
     } else {
       log('hermes/start: model: block reapply skipped (mount disabled)')
@@ -71,6 +85,9 @@ export default async function start(): Promise<void> {
   // Suppress unused warning for remoteUser — present here for parity with
   // bash; future homedir-driven config writes may need it.
   void remoteUser
+
+  const obs = obsidianLevers(loadStackEnv())
+  if (obs) await startObsidianForward(obs)
 
   await orbExec(
     vm,

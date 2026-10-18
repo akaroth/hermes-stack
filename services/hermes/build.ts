@@ -30,6 +30,7 @@ import {
 } from '../../scripts/lib/orb.ts'
 import { writeManagedBlock } from '../../scripts/lib/hermes-env.ts'
 import { die, log, warn } from '../../scripts/lib/log.ts'
+import { applyTaskModels } from './task-models.ts'
 
 const SVC = 'hermes'
 const D = resolve(STACK_ROOT, 'services/hermes')
@@ -409,8 +410,17 @@ const patchModelBlock = (ctx: Ctx): void => {
     out.push(ln)
   }
   if (!replaced) out.unshift(modelBlock.trimEnd())
-  writeFileSync(cfgPath, out.join('\n').replace(/\n*$/, '') + '\n')
-  log('model: block patched (Mac-side)')
+  const patched = out.join('\n').replace(/\n*$/, '') + '\n'
+  writeFileSync(
+    cfgPath,
+    applyTaskModels(
+      patched,
+      loadStackEnv(),
+      `http://litellm.${ctx.project}.orb.local:4000/v1`,
+      ctx.hermesVirtualKey,
+    ),
+  )
+  log('model: block + per-task model overrides patched (Mac-side)')
 }
 
 const installUnits = async (ctx: Ctx): Promise<void> => {
