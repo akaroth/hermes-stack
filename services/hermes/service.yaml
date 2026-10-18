@@ -30,6 +30,26 @@ env: |
   # place and is a no-op once the managed Node already satisfies this major.
   HERMES_NODE_MAJOR=24
   HERMES_MODEL=${STACK_LLM_MODEL}
+  # Optional per-task model overrides (LiteLLM model names; empty = Hermes
+  # default). Applied to ~/.hermes/config.yaml by build.ts/start.ts.
+  #   HERMES_MODEL_COMPRESSION  - context compression (text-only, cheap)
+  #   HERMES_MODEL_VISION       - image analysis (must be multimodal)
+  #   HERMES_MODEL_WEB_EXTRACT / _SESSION_SEARCH / _TITLE - side summaries
+  #   HERMES_MODEL_DELEGATION   - delegated subagents (inherit parent endpoint)
+  HERMES_MODEL_COMPRESSION=
+  HERMES_MODEL_VISION=
+  HERMES_MODEL_WEB_EXTRACT=
+  HERMES_MODEL_SESSION_SEARCH=
+  HERMES_MODEL_TITLE=
+  HERMES_MODEL_DELEGATION=
+  # Obsidian MCP (optional). Obsidian's Local REST API listens on Mac loopback
+  # only, so `stack-cli start` runs services/hermes/obsidian-forward.ts bound
+  # to the OrbStack bridge address ONLY (not the LAN) and Hermes talks to that.
+  # Token = the Local REST API key of the ONE vault that holds the port
+  # (two vaults with the plugin enabled collide on 27123/27124). Empty = off.
+  HERMES_OBSIDIAN_TOKEN=
+  HERMES_OBSIDIAN_BRIDGE_HOST=192.168.139.3
+  HERMES_OBSIDIAN_PORT=27123
   # Memory backend (applied to the VM by services/hermes/build.ts):
   #   default     - leave Hermes own default untouched (no override)
   #   honcho      - official plugin -> honcho-api.<project>.orb.local:8000
