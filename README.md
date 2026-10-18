@@ -174,6 +174,8 @@ or `./stack-cli enable`. The marquee ones:
 
 ## Going deeper
 
+- [docs/running.md](docs/running.md) — how to start the stack, what healthy
+  looks like, architecture diagram, troubleshooting.
 - [docs/architecture.md](docs/architecture.md) — multi-stack scoping,
   the secrets model, the build/start pipeline, the dc() wrapper, the
   hermetic env handling.
